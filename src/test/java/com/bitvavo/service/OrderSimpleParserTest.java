@@ -10,7 +10,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.nio.file.Path;
+import java.io.InputStream;
 
 @ExtendWith(MockitoExtension.class)
 class OrderSimpleParserTest {
@@ -18,11 +18,11 @@ class OrderSimpleParserTest {
     OrderSimpleParser TOT;
 
     @Mock
-    Path path;
+    InputStream inputStream;
 
     @BeforeEach
     void setUp() {
-        TOT = new OrderSimpleParser(path);
+        TOT = new OrderSimpleParser(inputStream);
     }
 
     @Test

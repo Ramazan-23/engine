@@ -5,17 +5,19 @@ import com.bitvavo.entity.Side;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.nio.file.Paths;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
 
 class OrderQuickCsvParserTest {
+    private static final String OUT = "src/test/resources/scenarios/";
 
     OrderQuickCsvParser TOT;
 
     @Test
-    void readOrdersScenario1() {
-        TOT = new OrderQuickCsvParser(Paths.get("src/test/resources/scenarios/test1.txt"));
+    void readOrdersScenario1() throws FileNotFoundException {
+        TOT = new OrderQuickCsvParser(new FileInputStream(OUT + "test1.txt"));
         List<Order> actual = TOT.readOrders().collect(Collectors.toList());
         List<Order> expected = List.of(
                 new Order(String.valueOf(10000), Side.BUY, 98, 25_500),
@@ -30,8 +32,8 @@ class OrderQuickCsvParserTest {
     }
 
     @Test
-    void readOrdersScenario2() {
-        TOT = new OrderQuickCsvParser(Paths.get("src/test/resources/scenarios/test2.txt"));
+    void readOrdersScenario2() throws FileNotFoundException {
+        TOT = new OrderQuickCsvParser(new FileInputStream(OUT + "test2.txt"));
         List<Order> actual = TOT.readOrders().collect(Collectors.toList());
         List<Order> expected = List.of(
                 new Order(String.valueOf(10000), Side.BUY, 98, 25_500),

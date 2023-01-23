@@ -4,19 +4,18 @@ import com.bitvavo.entity.Order;
 import com.bitvavo.entity.Side;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Objects;
 import java.util.stream.Stream;
 
 public class OrderSimpleParser implements OrderParser {
 
-    private final Path path;
+    private final InputStream inputStream;
 
-    public OrderSimpleParser(@NotNull final Path path) {
-        this.path = Objects.requireNonNull(path);
+    public OrderSimpleParser(@NotNull final InputStream inputStream) {
+        this.inputStream = Objects.requireNonNull(inputStream);
     }
 
 
@@ -30,10 +29,7 @@ public class OrderSimpleParser implements OrderParser {
 
     @Override
     public Stream<Order> readOrders() {
-        try {
-            return Files.lines(path).map(this::parseOrder);
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+        return bufferedReader.lines().map(this::parseOrder);
     }
 }

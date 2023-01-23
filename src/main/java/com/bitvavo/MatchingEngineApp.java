@@ -10,8 +10,6 @@ import com.bitvavo.service.TradeListener;
 import com.bitvavo.service.id.IdGenerator;
 import com.bitvavo.service.id.TimeBasedIdGenerator;
 
-import java.nio.file.Paths;
-
 public class MatchingEngineApp {
 
     public static void main(String[] args) {
@@ -21,12 +19,12 @@ public class MatchingEngineApp {
         ExchangePrintService exchangePrintService = new ExchangePrintService();
 
         IdGenerator idGenerator = new TimeBasedIdGenerator();
-        OrderParser orderParser = new OrderQuickCsvParser(Paths.get(args[0]));
+        OrderParser orderParser = new OrderQuickCsvParser(System.in);
         OrderProvidingService orderProvidingService =
                 new OrderProvidingService(orderParser, exchangeMarket, idGenerator);
         orderProvidingService.run();
         orderProvidingService.stop();
 
-        System.out.println(exchangePrintService.printMarket(exchangeMarket));
+        System.out.print(exchangePrintService.printMarket(exchangeMarket));
     }
 }
