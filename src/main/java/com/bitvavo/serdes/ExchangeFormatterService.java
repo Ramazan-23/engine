@@ -7,13 +7,13 @@ import com.bitvavo.service.ExchangeMarket;
 import java.text.DecimalFormat;
 import java.util.Iterator;
 
-public class ExchangePrintService {
+public class ExchangeFormatterService {
     private static final DecimalFormat volumeFormat = new DecimalFormat("###,###,###");
     private static final DecimalFormat priceFormat = new DecimalFormat("######");
     private static final String EMPTY_ORDER_PLACEHOLDER = new String(new char[18]).replace('\0', ' ');
 
 
-    public String printMarket(ExchangeMarket exchangeMarket) {
+    public String formatMarket(ExchangeMarket exchangeMarket) {
         StringBuilder sb = new StringBuilder();
         Iterator<Order> buyOrdersIterator = exchangeMarket.getBuyOrders().iterator();
         Iterator<Order> sellOrderIterator = exchangeMarket.getSellOrders().iterator();

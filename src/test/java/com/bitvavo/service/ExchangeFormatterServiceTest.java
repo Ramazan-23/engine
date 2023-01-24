@@ -2,7 +2,7 @@ package com.bitvavo.service;
 
 import com.bitvavo.entity.Order;
 import com.bitvavo.entity.Side;
-import com.bitvavo.serdes.ExchangePrintService;
+import com.bitvavo.serdes.ExchangeFormatterService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,10 +22,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @ExtendWith(MockitoExtension.class)
-class ExchangePrintServiceTest {
-    private static final Logger log = LoggerFactory.getLogger(ExchangePrintServiceTest.class);
+class ExchangeFormatterServiceTest {
+    private static final Logger log = LoggerFactory.getLogger(ExchangeFormatterServiceTest.class);
     long orderId = 0;
-    ExchangePrintService TOT = new ExchangePrintService();
+    ExchangeFormatterService TOT = new ExchangeFormatterService();
 
     @Mock
     ExchangeMarket exchangeMarket;
@@ -53,7 +53,7 @@ class ExchangePrintServiceTest {
 
         // taken from Example 1
         String checksum = "8ff13aad3e61429bfb5ce0857e846567";
-        String actual = TOT.printMarket(exchangeMarket);
+        String actual = TOT.formatMarket(exchangeMarket);
         log.info(actual);
         Assertions.assertEquals(expected, actual);
 
@@ -76,7 +76,7 @@ class ExchangePrintServiceTest {
         String expected =
                 "     50,000     99 |    105      14,600\n" +
                 "     25,500     98 |                   \n";
-        String actual = TOT.printMarket(exchangeMarket);
+        String actual = TOT.formatMarket(exchangeMarket);
         log.info(actual);
         Assertions.assertEquals(expected, actual);
     }
@@ -94,7 +94,7 @@ class ExchangePrintServiceTest {
         String expected =
                 "     50,000     99 |                   \n" +
                 "     25,500     98 |                   \n";
-        String actual = TOT.printMarket(exchangeMarket);
+        String actual = TOT.formatMarket(exchangeMarket);
         log.info(actual);
         Assertions.assertEquals(expected, actual);
     }
@@ -109,7 +109,7 @@ class ExchangePrintServiceTest {
         Mockito.when(exchangeMarket.getSellOrders()).thenReturn(sellOrders);
 
         String expected = "                   |    105      14,600\n";
-        String actual = TOT.printMarket(exchangeMarket);
+        String actual = TOT.formatMarket(exchangeMarket);
         log.info(actual);
         Assertions.assertEquals(expected, actual);
     }

@@ -1,6 +1,6 @@
 package com.bitvavo;
 
-import com.bitvavo.serdes.ExchangePrintService;
+import com.bitvavo.serdes.ExchangeFormatterService;
 import com.bitvavo.serdes.OrderParser;
 import com.bitvavo.serdes.OrderQuickCsvParser;
 import com.bitvavo.serdes.TradePrintServicePrintWriter;
@@ -16,7 +16,7 @@ public class MatchingEngineApp {
 
         TradeListener tradeListener = new TradePrintServicePrintWriter();
         ExchangeMarket exchangeMarket = new ExchangeMarket(tradeListener);
-        ExchangePrintService exchangePrintService = new ExchangePrintService();
+        ExchangeFormatterService exchangeFormatterService = new ExchangeFormatterService();
 
         IdGenerator idGenerator = new TimeBasedIdGenerator();
         OrderParser orderParser = new OrderQuickCsvParser(System.in);
@@ -25,6 +25,6 @@ public class MatchingEngineApp {
         orderProvidingService.run();
         orderProvidingService.stop();
 
-        System.out.print(exchangePrintService.printMarket(exchangeMarket));
+        System.out.print(exchangeFormatterService.formatMarket(exchangeMarket));
     }
 }

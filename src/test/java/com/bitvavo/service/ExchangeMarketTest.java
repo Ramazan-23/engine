@@ -195,4 +195,69 @@ class ExchangeMarketTest {
         Assertions.assertEquals(103, sellOrder3.getPrice());
         Assertions.assertEquals(300, sellOrder3.getQuantity());
     }
+
+    @Test
+    @DisplayName("Aggressor order becomes initiator in next trade")
+    void aggressorOrderBecomesInitiator() {
+        TOT.onOrder(new Order(String.valueOf(orderId), Side.BUY, 95, 400).setUniqueId(orderId++));
+        TOT.onOrder(new Order(String.valueOf(orderId), Side.BUY, 100, 200).setUniqueId(orderId++));
+        TOT.onOrder(new Order(String.valueOf(orderId), Side.BUY, 101, 100).setUniqueId(orderId++));
+
+        TOT.onOrder(new Order(String.valueOf(orderId), Side.SELL, 102, 200).setUniqueId(orderId++));
+        TOT.onOrder(new Order(String.valueOf(orderId), Side.SELL, 103, 300).setUniqueId(orderId++));
+        // aggressor order -> will become initiator next time
+        TOT.onOrder(new Order(String.valueOf(orderId), Side.SELL, 98, 400).setUniqueId(orderId++));
+
+        Mockito.verify(tradeListener).onTrade(Mockito.argThat(trade ->
+                trade.getAggressorOrderId().equals("5") &&
+                        trade.getInitiatorOrderId().equals("2") &&
+                        trade.getPrice() == 101 &&
+                        trade.getVolume() == 100));
+
+        Mockito.verify(tradeListener).onTrade(Mockito.argThat(trade ->
+                trade.getAggressorOrderId().equals("5") &&
+                        trade.getInitiatorOrderId().equals("1") &&
+                        trade.getPrice() == 100 &&
+                        trade.getVolume() == 200));
+        Mockito.verifyNoMoreInteractions(tradeListener);
+
+
+        Assertions.assertEquals(95, TOT.getBestBid());
+        Assertions.assertEquals(98, TOT.getBestAsk());
+
+
+        TOT.onOrder(new Order(String.valueOf(orderId), Side.BUY, 102, 350).setUniqueId(orderId++));
+        Mockito.verify(tradeListener).onTrade(Mockito.argThat(trade ->
+                trade.getAggressorOrderId().equals("6") &&
+                        trade.getInitiatorOrderId().equals("5") &&
+                        trade.getPrice() == 98 &&
+                        trade.getVolume() == 100));
+
+        Mockito.verify(tradeListener).onTrade(Mockito.argThat(trade ->
+                trade.getAggressorOrderId().equals("6") &&
+                        trade.getInitiatorOrderId().equals("3") &&
+                        trade.getPrice() == 102 &&
+                        trade.getVolume() == 200));
+        Mockito.verifyNoMoreInteractions(tradeListener);
+
+        Assertions.assertEquals(102, TOT.getBestBid());
+        Assertions.assertEquals(103, TOT.getBestAsk());
+
+        Assertions.assertEquals(2, TOT.getBuyOrders().size());
+        Iterator<Order> buyOrdersIt = TOT.getBuyOrders().iterator();
+        Order buyOrder1 = buyOrdersIt.next();
+        Assertions.assertEquals(102, buyOrder1.getPrice());
+        Assertions.assertEquals(50, buyOrder1.getQuantity());
+
+        Order buyOrder2 = buyOrdersIt.next();
+        Assertions.assertEquals(95, buyOrder2.getPrice());
+        Assertions.assertEquals(400, buyOrder2.getQuantity());
+        Assertions.assertEquals(Side.BUY, buyOrder2.getSide());
+
+        Assertions.assertEquals(1, TOT.getSellOrders().size());
+        Iterator<Order> sellOrdersIt = TOT.getSellOrders().iterator();
+        Order sellOrder1 = sellOrdersIt.next();
+        Assertions.assertEquals(103, sellOrder1.getPrice());
+        Assertions.assertEquals(300, sellOrder1.getQuantity());
+    }
 }
