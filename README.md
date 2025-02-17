@@ -4,7 +4,7 @@ mvn clean compile assembly:single
 
 **How to run**
 
-java -jar target/engine-1.0-SNAPSHOT-jar-with-dependencies.jar << src/test/resources/test1.txt
+java -jar target/engine-1.0-SNAPSHOT-jar-with-dependencies.jar < src/test/resources/test1.txt
 
 
 **NOTES**
